@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { MdSearch, MdPeople, MdDelete, MdVisibility } from 'react-icons/md';
 import toast from 'react-hot-toast';
 import api from '../services/api';
@@ -16,12 +16,11 @@ export default function Customers({ setSidebarOpen }) {
   const [detailLoading, setDetailLoading] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  useEffect(() => {
-    fetchCustomers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, search]);
+ useEffect(() => {
+  fetchCustomers();
+}, [fetchCustomers]);
+const fetchCustomers = useCallback(async () => {
 
-  const fetchCustomers = async () => {
     setLoading(true);
     try {
       const res = await api.get('/admin/customers', { params: { search, page } });
@@ -32,7 +31,7 @@ export default function Customers({ setSidebarOpen }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search]);
 
   const openDetail = async (id) => {
     setDetailLoading(true);

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { MdSearch, MdReceiptLong, MdVisibility } from 'react-icons/md';
 import toast from 'react-hot-toast';
 import api from '../services/api';
@@ -37,7 +37,7 @@ export default function Orders({ setSidebarOpen }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, search, statusFilter, paymentStatusFilter]);
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     setLoading(true);
     try {
       const res = await api.get('/admin/orders', {
@@ -50,7 +50,7 @@ export default function Orders({ setSidebarOpen }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search, statusFilter, paymentStatusFilter]);
 
   const openDetail = async (id) => {
     setDetailLoading(true);

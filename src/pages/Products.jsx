@@ -46,22 +46,30 @@ export default function Products({ setSidebarOpen }) {
 
   useEffect(() => {
     fetchProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, search]);
 
   const fetchCategories = async () => {
     try {
-      const res = await api.get('/categories');
-      setCategories(res.data.categories || []);
+      const res = await api.get('/admin/categories');
+      // handle both paginated ({data: [...]}) and plain array responses
+      const list = Array.isArray(res.data) ? res.data : (res.data.categories || res.data.data || []);
+      setCategories(list);
     } catch (err) {
-      // categories optional for filter; fail silently
+      toast.error('Categories load nahi ho sakin');
     }
   };
 
   const fetchProducts = async () => {
     setLoading(true);
+
     try {
-      const res = await api.get('/admin/products', { params: { search, page } });
+      const res = await api.get('/admin/products', {
+        params: {
+          search,
+          page,
+        },
+      });
+
       setProducts(res.data.products.data || []);
       setLastPage(res.data.products.last_page || 1);
     } catch (err) {
