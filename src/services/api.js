@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Laravel backend base URL — update if your path differs
-const BASE_URL = 'http://localhost/Laravel/bzack-backend/public/api';
+const BASE_URL = 'https://bzack-backend.howto.rocks/api';
 
 const api = axios.create({
   baseURL: BASE_URL,
