@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { MdAdd, MdEdit, MdDelete, MdSearch, MdInventory2, MdClose } from 'react-icons/md';
 import toast from 'react-hot-toast';
 import api from '../services/api';
@@ -40,15 +40,7 @@ export default function Products({ setSidebarOpen }) {
 
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [page, search]);
-
-  const fetchCategories = async () => {
+  const fetchCategories = useCallback(async () => {
     try {
       const res = await api.get('/admin/categories');
       // handle both paginated ({data: [...]}) and plain array responses
@@ -57,9 +49,9 @@ export default function Products({ setSidebarOpen }) {
     } catch (err) {
       toast.error('Categories load nahi ho sakin');
     }
-  };
+  }, []);
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
 
     try {
@@ -77,7 +69,15 @@ export default function Products({ setSidebarOpen }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, search]);
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   const resetImageState = () => {
     setExistingImages([]);

@@ -16,11 +16,7 @@ export default function Customers({ setSidebarOpen }) {
   const [detailLoading, setDetailLoading] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
- useEffect(() => {
-  fetchCustomers();
-}, [fetchCustomers]);
-const fetchCustomers = useCallback(async () => {
-
+  const fetchCustomers = useCallback(async () => {
     setLoading(true);
     try {
       const res = await api.get('/admin/customers', { params: { search, page } });
@@ -32,6 +28,10 @@ const fetchCustomers = useCallback(async () => {
       setLoading(false);
     }
   }, [page, search]);
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [fetchCustomers]);
 
   const openDetail = async (id) => {
     setDetailLoading(true);
