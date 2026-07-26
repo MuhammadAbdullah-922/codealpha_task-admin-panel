@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   MdAdd,
   MdEdit,
@@ -16,6 +16,7 @@ import {
   Pagination,
   StatusBadge,
 } from "../components/ui/UI";
+
 
 const getImageUrl = (path) => {
   if (!path) return "";
@@ -56,35 +57,35 @@ export default function Categories({ setSidebarOpen }) {
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
-    fetchCategories();
-  }, [page, search]);
+  fetchCategories();
+}, [fetchCategories]);
 
-  const fetchCategories = async () => {
-    setLoading(true);
+const fetchCategories = useCallback(async () => {
+  setLoading(true);
 
-    try {
-      const res = await api.get("/admin/categories", {
-        params: {
-          page,
-          search,
-        },
-      });
+  try {
+    const res = await api.get("/admin/categories", {
+      params: {
+        page,
+        search,
+      },
+    });
 
-      const data = res.data.categories;
+    const data = res.data.categories;
 
-      if (data.data) {
-        setCategories(data.data);
-        setLastPage(data.last_page);
-      } else {
-        setCategories(data || []);
-        setLastPage(1);
-      }
-    } catch (err) {
-      toast.error("Categories load nahi ho sakin");
-    } finally {
-      setLoading(false);
+    if (data.data) {
+      setCategories(data.data);
+      setLastPage(data.last_page);
+    } else {
+      setCategories(data || []);
+      setLastPage(1);
     }
-  };
+  } catch (err) {
+    toast.error("Categories load nahi ho sakin");
+  } finally {
+    setLoading(false);
+  }
+}, [page, search]);
 
   const openAdd = () => {
     setEditId(null);
