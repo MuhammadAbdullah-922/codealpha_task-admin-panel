@@ -12,13 +12,7 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     setLoading(true);
     try {
-      // NOTE: Content-Type overridden to 'text/plain' for this request only.
-      // This avoids the browser's CORS preflight (OPTIONS) request, which
-      // InfinityFree's server was failing to handle (was returning 404).
-      // Backend must manually decode the JSON body — see AuthController::login()
-      const res = await api.post('/login', { email, password }, {
-        headers: { 'Content-Type': 'text/plain' },
-      });
+      const res = await api.post('/login', { email, password });
       const { user, token } = res.data;
 
       if (user.role !== 'admin') {
